@@ -133,7 +133,9 @@ section[data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] { backgroun
 
 @st.cache_data
 def load_gofood():
-    df = pd.read_csv("../data/gofood_dataset.csv")
+    import os
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    df = pd.read_csv(os.path.join(BASE_DIR, "..", "data", "gofood_dataset.csv"))
     missing_before = df.isnull().sum().sum()
     duplicate_before = int(df.duplicated().sum())
     df['discount_price'] = df['discount_price'].fillna(0)
