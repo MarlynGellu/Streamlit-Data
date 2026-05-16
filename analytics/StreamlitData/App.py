@@ -131,10 +131,11 @@ section[data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] { backgroun
 # LOAD DATA
 # =========================================================
 
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 @st.cache_data
 def load_gofood():
-    import os
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     df = pd.read_csv(os.path.join(BASE_DIR, "..", "data", "gofood_dataset.csv"))
     missing_before = df.isnull().sum().sum()
     duplicate_before = int(df.duplicated().sum())
@@ -145,23 +146,22 @@ def load_gofood():
 
 @st.cache_data
 def load_training_data():
-    with open("../outputs/training_data.json", "r", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "..", "outputs", "training_data.json"), "r", encoding="utf-8") as f:
         return json.load(f)
 
 @st.cache_data
 def load_fixed_dataset():
-    with open("../dataset_fixed.json", "r", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "..", "dataset_fixed.json"), "r", encoding="utf-8") as f:
         return json.load(f)
 
 @st.cache_data
 def load_templates():
-    with open("../outputs/talangin_synthetic_templates.json", "r", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "..", "outputs", "talangin_synthetic_templates.json"), "r", encoding="utf-8") as f:
         return json.load(f)
 
 @st.cache_data
 def compute_ner_stats(n_records):
-    # Load and compute from training data
-    with open("../outputs/training_data.json", "r", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "..", "outputs", "training_data.json"), "r", encoding="utf-8") as f:
         training_data = json.load(f)
     entity_counts = Counter()
     item_counter  = Counter()
@@ -186,7 +186,6 @@ training_data  = load_training_data()
 fixed_dataset  = load_fixed_dataset()
 templates      = load_templates()
 entity_counts, item_counter, person_counter, person_per_rec = compute_ner_stats(len(training_data))
-
 # =========================================================
 # SIDEBAR
 # =========================================================
