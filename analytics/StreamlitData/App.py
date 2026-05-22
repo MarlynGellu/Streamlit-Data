@@ -119,7 +119,7 @@ div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {
 # ── 3. LOAD & CACHE DATA ───────────────────────────────────
 @st.cache_data
 def load_gofood():
-    df = pd.read_csv("../data/gofood_dataset.csv")
+    df = pd.read_csv("analytics/data/gofood_dataset.csv")
     missing_before   = df.isnull().sum().sum()
     duplicate_before = int(df.duplicated().sum())
     df['discount_price'] = df['discount_price'].fillna(0)
@@ -151,9 +151,9 @@ def compute_ner_stats():
     return entity_counts, item_counter, person_counter, person_per_rec
 
 df_raw, df, missing_before, duplicate_before, missing_after = load_gofood()
-training_data  = load_json("../outputs/training_data.json")
-fixed_dataset  = load_json("../dataset_fixed.json")
-templates      = load_json("../outputs/talangin_synthetic_templates.json")
+training_data  = load_json("analytics/outputs/training_data.json")
+fixed_dataset  = load_json("analytics/dataset_fixed.json")
+templates      = load_json("analytics/outputs/talangin_synthetic_templates.json")
 entity_counts, item_counter, person_counter, person_per_rec = compute_ner_stats()
 
 
