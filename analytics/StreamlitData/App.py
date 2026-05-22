@@ -119,7 +119,7 @@ div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {
 # ── 3. LOAD & CACHE DATA ───────────────────────────────────
 @st.cache_data
 def load_gofood():
-    df = pd.read_csv("data/gofood_dataset.csv")
+    df = pd.read_csv("/data/gofood_dataset.csv")
     missing_before   = df.isnull().sum().sum()
     duplicate_before = int(df.duplicated().sum())
     df['discount_price'] = df['discount_price'].fillna(0)
