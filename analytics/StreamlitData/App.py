@@ -134,7 +134,7 @@ def load_json(path):
 
 @st.cache_data
 def compute_ner_stats():
-    training_data  = load_json("../outputs/training_data.json")
+    training_data  = load_json("analytics/outputs/training_data.json")
     entity_counts  = Counter()
     item_counter   = Counter()
     person_counter = Counter()
