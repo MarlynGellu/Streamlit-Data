@@ -2,6 +2,16 @@
 # TALANG.IN — DATA SCIENCE ANALYTICS DASHBOARD (RINGKAS)
 # GoFood NER Project | Streamlit v3.0
 # =========================================================
+# STRUKTUR FILE INI:
+#   1. Import & Konfigurasi Halaman
+#   2. CSS Styling (disingkat pakai fungsi helper)
+#   3. Load & Cache Data
+#   4. Hitung KPI & Statistik Global
+#   5. Sidebar (navigasi + filter)
+#   6. Header Utama
+#   7. Router Section (tiap section = 1 blok elif)
+#   8. Footer
+# =========================================================
 
 # ── 1. IMPORT & KONFIGURASI ────────────────────────────────
 import streamlit as st
@@ -22,47 +32,6 @@ st.set_page_config(
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-
-/* ── FORCE LIGHT MODE & TEXT VISIBILITY (FIX DEPLOY) ── */
-html, body, .stApp, [class*="css"] {
-    color-scheme: light !important;
-}
-.stApp, .block-container {
-    color: #1B4332 !important;
-}
-.stApp p, .stApp div, .stApp span,
-.stApp li, .stApp ol, .stApp ul {
-    color: #1B4332;
-}
-div[data-testid="stMarkdownContainer"] p,
-div[data-testid="stMarkdownContainer"] li,
-div[data-testid="stMarkdownContainer"] ol,
-div[data-testid="stMarkdownContainer"] ul,
-div[data-testid="stMarkdownContainer"] span {
-    color: #1B4332 !important;
-}
-.stMarkdown p, .stMarkdown li,
-.stMarkdown ol, .stMarkdown span {
-    color: #1B4332 !important;
-}
-.streamlit-expanderHeader p,
-details summary p,
-details summary span {
-    color: #1B4332 !important;
-}
-.stDataFrame, .stDataFrame *,
-div[data-testid="stDataFrame"] * {
-    color: #1B4332 !important;
-}
-.stSlider label, .stMultiSelect label,
-.stSelectbox label, .stTextInput label {
-    color: #1B4332 !important;
-}
-.stTabs [data-baseweb="tab"] p { color: #5A8A6A !important; }
-.stTabs [aria-selected="true"] p { color: #1B4332 !important; }
-div[data-testid="stAlert"] p { color: #1B4332 !important; }
-/* ── END FIX ── */
-
 * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
 .stApp { background: linear-gradient(150deg, #F0F7F0, #E8F4E8, #EAF5EA); }
@@ -93,17 +62,16 @@ section[data-testid="stSidebar"] label { color: #A8D5B5 !important; font-size: 1
 .ner-value  { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
 
 .alert-box   { border-radius: 14px; padding: 16px 20px; margin-bottom: 16px; font-size: 14px; line-height: 1.7; }
-.alert-info    { background: #EBF8EE; border-left: 4px solid #2D9A5A; color: #1B4332 !important; }
-.alert-success { background: #E8F5E9; border-left: 4px solid #2E7D32; color: #1B4332 !important; }
-.alert-warning { background: #FFF8E1; border-left: 4px solid #F9A825; color: #5D4037 !important; }
-.alert-box * { color: inherit !important; }
+.alert-info    { background: #EBF8EE; border-left: 4px solid #2D9A5A; color: #1B4332; }
+.alert-success { background: #E8F5E9; border-left: 4px solid #2E7D32; color: #1B4332; }
+.alert-warning { background: #FFF8E1; border-left: 4px solid #F9A825; color: #5D4037; }
 .alert-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
 
 .badge        { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.badge-green  { background: #C8E6C9; color: #1B5E20 !important; }
-.badge-yellow { background: #FFF9C4; color: #795548 !important; }
-.badge-red    { background: #FFCDD2; color: #B71C1C !important; }
-.badge-blue   { background: #BBDEFB; color: #0D47A1 !important; }
+.badge-green  { background: #C8E6C9; color: #1B5E20; }
+.badge-yellow { background: #FFF9C4; color: #795548; }
+.badge-red    { background: #FFCDD2; color: #B71C1C; }
+.badge-blue   { background: #BBDEFB; color: #0D47A1; }
 
 .source-chip { display: inline-block; background: #E8F5E9; color: #1B5E20; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; margin: 3px; border: 1px solid #C8E6C9; }
 
@@ -285,6 +253,7 @@ st.markdown("""
 
 # ── 7. HELPER FUNCTIONS ────────────────────────────────────
 def section_header(icon, title, desc):
+    """Render header tiap section secara konsisten."""
     st.markdown(f"""
     <div class="section-header">
         <div class="section-icon"><i class="fa-solid {icon}"></i></div>
@@ -294,6 +263,7 @@ def section_header(icon, title, desc):
     """, unsafe_allow_html=True)
 
 def metric_card(col, icon_html, label, value, sub, font_size="26px"):
+    """Render kartu metrik ke dalam kolom yang diberikan."""
     with col:
         st.markdown(f"""
         <div class="metric-card">
@@ -305,6 +275,7 @@ def metric_card(col, icon_html, label, value, sub, font_size="26px"):
         """, unsafe_allow_html=True)
 
 def plotly_layout(fig, title, height=430):
+    """Terapkan layout standar ke semua chart Plotly."""
     fig.update_layout(
         height=height, coloraxis_showscale=False,
         title=dict(text=title, font=dict(size=14, color='#1B4332')),
@@ -316,6 +287,7 @@ def plotly_layout(fig, title, height=430):
 
 # ══════════════════════════════════════════════════════════
 # 8. ROUTER SECTION
+# Tiap section dirender hanya jika dipilih di sidebar.
 # ══════════════════════════════════════════════════════════
 
 if selected_section == "overview":
@@ -629,6 +601,7 @@ elif selected_section == "ab_testing":
     sat_a  = np.clip(np.random.normal(3.2, 0.6, n_users//2), 1, 5)
     sat_b  = np.clip(np.random.normal(3.8, 0.5, n_users//2), 1, 5)
 
+    # Kartu perbandingan metrik A vs B
     col1, col2, col3 = st.columns(3)
     for col, metric, va, vb in [(col1, "Response Rate",   f"{rate_a:.1f}%", f"{rate_b:.1f}%"),
                                  (col2, "Avg. Resolve Time", f"{time_a.mean():.1f}j", f"{time_b.mean():.1f}j"),
